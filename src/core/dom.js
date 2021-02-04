@@ -1,86 +1,134 @@
 class Dom {
-    constructor(selector) {
-        this.$el = typeof selector === 'string'
-            ? document.querySelector(selector)
-            : selector
+  constructor(selector) {
+    this.$el = typeof selector === 'string'
+      ? document.querySelector(selector)
+      : selector
+  }
+
+  html(html) {
+    if (typeof html === 'string') {
+      this.$el.innerHTML = html
+      return this
+    }
+    return this.$el.outerHTML.trim()
+  }
+
+  clear() {
+    this.html('')
+    return this
+  }
+
+  text(text) {
+    if (typeof text !== 'undefined') {
+      this.$el.textContent = text
+      return this
+    }
+    if (this.$el.tagName.toLowerCase() === 'input') {
+      return this.$el.value.trim()
+    }
+    return this.$el.textContent.trim()
+  }
+
+  on(eventType, callback) {
+    this.$el.addEventListener(eventType, callback)
+  }
+
+  off(eventType, callback) {
+    this.$el.removeEventListener(eventType, callback)
+  }
+
+  find(selector) {
+    return $(this.$el.querySelector(selector))
+  }
+
+  append(node) {
+    if (node instanceof Dom) {
+      node = node.$el
     }
 
-    html(html) {
-        if (typeof html === 'string') {
-            this.$el.innerHTML = html
-            return this
-        }
-
-        return this.$el.outerHTML.trim()
+    if (Element.prototype.append) {
+      this.$el.append(node)
+    } else {
+      this.$el.appendChild(node)
     }
 
-    clear() {
-        this.html('')
-        return this
-    }
+    return this
+  }
 
-    on(eventType, callback) {
-        this.$el.addEventListener(eventType, callback)
-    }
+  get data() {
+    return this.$el.dataset
+  }
 
-    off(eventType, callback) {
-        this.$el.removeEventListener(eventType, callback)
-    }
+  closest(selector) {
+    return $(this.$el.closest(selector))
+  }
 
-    append(node) {
-        if (node instanceof Dom) {
-            node = node.$el
-        }
-        if (Element.prototype.append) {
-            this.$el.append(node)
-        } else {
-            this.$el.appendChild(node)
-        }
+  getCoords() {
+    return this.$el.getBoundingClientRect()
+  }
 
-        return this
-    }
+  findAll(selector) {
+    return this.$el.querySelectorAll(selector)
+  }
 
-    closest(selector) {
-        return $(this.$el.closest(selector))
-    }
+  css(styles = {}) {
+    Object
+        .keys(styles)
+        .forEach(key => {
+          this.$el.style[key] = styles[key]
+        })
+  }
 
-    getCoords() {
-        return this.$el.getBoundingClientRect()
-    }
+  getStyles(styles = []) {
+    return styles.reduce((res, s) => {
+      res[s] = this.$el.style[s]
+      return res
+    }, {})
+  }
 
-    get data() {
-        return this.$el.dataset
+  id(parse) {
+    if (parse) {
+      const parsed = this.id().split(':')
+      return {
+        row: +parsed[0],
+        col: +parsed[1]
+      }
     }
+    return this.data.id
+  }
 
-    findAll(selector) {
-        return this.$el.querySelectorAll(selector)
-    }
+  focus() {
+    this.$el.focus()
+    return this
+  }
 
-    css(styles = {}) {
-        Object
-            .keys(styles)
-            .forEach(key => {
-                this.$el.style[key] = styles[key]
-            })
+  attr(name, value) {
+    if (value) {
+      this.$el.setAttribute(name, value)
+      return this
     }
+    return this.$el.getAttribute(name)
+  }
 
-    addClass(className) {
-        return this.$el.classList.add(className)
-    }
+  addClass(className) {
+    this.$el.classList.add(className)
+    return this
+  }
 
-    removeClass(className) {
-        return this.$el.classList.remove(className)
-    }
+  removeClass(className) {
+    this.$el.classList.remove(className)
+    return this
+  }
 }
 
 export function $(selector) {
-    return new Dom(selector)
+  return new Dom(selector)
 }
 
-$.create = (tagname, classes = '') => {
-    const el = document.createElement(tagname)
-    if (classes) {
-        el.classList.add(classes)
-    }
-    return $(el)
+$.create = (tagName, classes = '') => {
+  const el = document.createElement(tagName)
+  if (classes) {
+    el.classList.add(classes)
+  }
+  return $(el)
 }
