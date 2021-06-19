@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlexKremlev/excel.git"
+    "url": "git+https://github.com/AtexKayne/excel.git"
   },
   "keywords": [
     "JS",
@@ -19,9 +19,9 @@
   "author": "Alex Kremlev",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AlexKremlev/excel/issues"
+    "url": "https://github.com/AtexKayne/excel/issues"
   },
-  "homepage": "https://github.com/AlexKremlev/excel#readme",
+  "homepage": "https://github.com/AtexKayne/excel#readme",
   "private": true,
   "browserslist": "> 0.25%, not dead",
   "devDependencies": {
